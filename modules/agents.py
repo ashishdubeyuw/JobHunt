@@ -75,11 +75,11 @@ Provide a helpful, professional response.
         except Exception as e:
             print(f"⚠️ Error setting up agent: {e}")
     
-    def _create_tools(self) -> List[Tool]:
+    def _create_tools(self) -> List:
         """Create tools for the agent."""
         tools = []
         
-        if self.query_engine:
+        if self.query_engine and LANGCHAIN_AVAILABLE:
             def query_jobs(query: str) -> str:
                 """Query the job database."""
                 try:
