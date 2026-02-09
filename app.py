@@ -544,10 +544,10 @@ def render_header():
     </div>
     """, unsafe_allow_html=True)
     
-    # Custom Menu Button - uses components.html to escape iframe sandbox
+    # Custom Menu Button - directly toggles sidebar via CSS
     import streamlit.components.v1 as components
     components.html("""
-    <div style="position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;">
+    <div id="menuBtnWrap" style="position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;">
         <button id="menuBtn" style="
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -563,36 +563,27 @@ def render_header():
     </div>
     <script>
     document.getElementById('menuBtn').addEventListener('click', function() {
-        // Access the parent Streamlit document
         const doc = window.parent.document;
-        
-        // Try multiple selectors to find the toggle
-        const selectors = [
-            '[data-testid="collapsedControl"]',
-            '[data-testid="collapsedControl"] button',
-            'button[kind="header"]',
-            '.css-1rs6os',
-            'section[data-testid="stSidebar"] button',
-        ];
-        
-        for (const sel of selectors) {
-            const btn = doc.querySelector(sel);
-            if (btn) {
-                btn.click();
-                return;
-            }
-        }
-        
-        // Fallback: toggle sidebar via CSS class manipulation
         const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (sidebar) {
-            const isCollapsed = sidebar.getAttribute('aria-expanded') === 'false';
-            sidebar.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
-            sidebar.style.display = isCollapsed ? 'block' : 'none';
-            sidebar.style.width = isCollapsed ? '21rem' : '0';
-            sidebar.style.minWidth = isCollapsed ? '21rem' : '0';
-            sidebar.style.opacity = isCollapsed ? '1' : '0';
-            sidebar.style.transform = isCollapsed ? 'translateX(0)' : 'translateX(-100%)';
+        if (!sidebar) return;
+        
+        // Check current state
+        const isHidden = sidebar.style.transform === 'translateX(-100%)' || 
+                         sidebar.offsetWidth < 10 ||
+                         getComputedStyle(sidebar).transform.includes('-');
+        
+        if (isHidden) {
+            // Show sidebar
+            sidebar.style.transform = 'translateX(0)';
+            sidebar.style.width = '21rem';
+            sidebar.style.minWidth = '21rem';
+            sidebar.style.visibility = 'visible';
+            sidebar.style.position = 'relative';
+        } else {
+            // Hide sidebar
+            sidebar.style.transform = 'translateX(-100%)';
+            sidebar.style.width = '0';
+            sidebar.style.minWidth = '0';
         }
     });
     </script>
