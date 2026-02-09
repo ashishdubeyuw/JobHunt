@@ -97,7 +97,8 @@ class WebJobSearch:
         query: str,
         location: str = "",
         num_results: int = 20,
-        source: str = "auto"
+        source: str = "auto",
+        resume_skills: List[str] = None
     ) -> List[JobListing]:
         """
         Search for jobs across multiple sources.
@@ -106,7 +107,8 @@ class WebJobSearch:
             query: Job search query (e.g., "Python Developer")
             location: Location filter (e.g., "Remote", "San Francisco")
             num_results: Number of results to return
-            source: Search source ("google_jobs", "jsearch", "serper", "google", "auto")
+            source: Search source ("free_apis", "jsearch", "serper", "auto")
+            resume_skills: Skills from user's resume for better matching
             
         Returns:
             List of JobListing objects
@@ -116,7 +118,7 @@ class WebJobSearch:
         if source == "auto":
             # Try sources in order of preference
             # 1. FREE JOB APIs (DEFAULT - Remotive, Arbeitnow, etc. - no API needed, most reliable)
-            jobs = self._search_free_apis(query, location, num_results)
+            jobs = self._search_free_apis(query, location, num_results, resume_skills)
             
             # 2. JSearch (RapidAPI) - 500 free/month, real job data (backup)
             if not jobs and self.rapidapi_key:
@@ -126,7 +128,7 @@ class WebJobSearch:
                 search_query = f'{query} jobs {location} site:linkedin.com/jobs OR site:indeed.com'
                 jobs = self._search_serper(search_query, num_results)
         elif source == "free_apis":
-            jobs = self._search_free_apis(query, location, num_results)
+            jobs = self._search_free_apis(query, location, num_results, resume_skills)
         elif source == "jsearch":
             jobs = self._search_jsearch(query, location, num_results)
         elif source == "serper":
@@ -135,12 +137,12 @@ class WebJobSearch:
         
         return jobs[:num_results]
     
-    def _search_free_apis(self, query: str, location: str, num_results: int) -> List[JobListing]:
+    def _search_free_apis(self, query: str, location: str, num_results: int, resume_skills: List[str] = None) -> List[JobListing]:
         """Use free job APIs (Remotive, Arbeitnow, etc.) - no API key required."""
         try:
             from .free_job_apis import FreeJobAPIs
             
-            api = FreeJobAPIs()
+            api = FreeJobAPIs(resume_skills=resume_skills)
             results = api.search_all(query, location, num_results)
             
             # Convert FreeJobResult to JobListing

@@ -55,7 +55,7 @@ class FreeJobAPIs:
     4. Himalayas - Remote jobs
     """
     
-    SKILL_KEYWORDS = [
+    DEFAULT_SKILL_KEYWORDS = [
         "Python", "Java", "JavaScript", "TypeScript", "C++", "Go", "Rust", "Ruby",
         "React", "Vue", "Angular", "Node.js", "Django", "Flask", "FastAPI",
         "AWS", "Azure", "GCP", "Docker", "Kubernetes", "Terraform",
@@ -63,16 +63,38 @@ class FreeJobAPIs:
         "Deep Learning", "TensorFlow", "PyTorch", "NLP", "Computer Vision"
     ]
     
-    def __init__(self):
+    def __init__(self, resume_skills: List[str] = None):
+        """
+        Initialize with optional resume skills.
+        
+        Args:
+            resume_skills: Skills extracted from user's resume. If provided,
+                          these are used as the primary skill keywords for matching.
+        """
         self.session = requests.Session()
         self.session.headers.update({
             "User-Agent": "JobMatchingApp/1.0",
             "Accept": "application/json"
         })
+        # Use resume skills first, then fall back to defaults
+        if resume_skills and len(resume_skills) > 0:
+            # Combine resume skills with defaults (resume skills first)
+            self.skill_keywords = list(resume_skills) + [
+                s for s in self.DEFAULT_SKILL_KEYWORDS 
+                if s.lower() not in [rs.lower() for rs in resume_skills]
+            ]
+            print(f"🎯 Using resume skills for matching: {', '.join(resume_skills[:10])}")
+        else:
+            self.skill_keywords = self.DEFAULT_SKILL_KEYWORDS
     
     def search_all(self, query: str, location: str = "", num_results: int = 20) -> List[FreeJobResult]:
         """Search all free job APIs and combine results."""
         all_jobs = []
+        
+        # Extract individual keywords from query for matching
+        self.query_keywords = [w.strip().lower() for w in re.split(r'[,\s]+', query) 
+                               if len(w.strip()) > 2 and w.strip().lower() not in ('jobs', 'remote', 'and', 'the', 'for')]
+        print(f"🔍 Search keywords: {self.query_keywords}")
         
         # Try each API
         apis = [
@@ -127,8 +149,8 @@ class FreeJobAPIs:
             company = job_data.get("company_name", "")
             description = job_data.get("description", "")
             
-            # Basic relevance check
-            if query.lower() not in f"{title} {description}".lower():
+            # Relevance check - match ANY keyword from query
+            if not self._matches_query(f"{title} {description}"):
                 continue
             
             job = FreeJobResult(
@@ -165,8 +187,8 @@ class FreeJobAPIs:
             title = job_data.get("title", "")
             description = job_data.get("description", "")
             
-            # Filter by query
-            if query.lower() not in f"{title} {description}".lower():
+            # Filter by query - match ANY keyword
+            if not self._matches_query(f"{title} {description}"):
                 continue
             
             # Filter by location if provided
@@ -255,8 +277,8 @@ class FreeJobAPIs:
                 title = job_data.get("title", "")
                 description = job_data.get("description", "")
                 
-                # Filter by query
-                if query.lower() not in f"{title} {description}".lower():
+                # Filter by query - match ANY keyword
+                if not self._matches_query(f"{title} {description}"):
                     continue
                 
                 job = FreeJobResult(
@@ -301,10 +323,17 @@ class FreeJobAPIs:
     
     def _clean_html(self, html: str) -> str:
         """Remove HTML tags from text."""
-        import re
         clean = re.sub(r'<[^>]+>', ' ', html)
         clean = re.sub(r'\s+', ' ', clean)
         return clean.strip()
+    
+    def _matches_query(self, text: str, min_matches: int = 1) -> bool:
+        """Check if text matches ANY keyword from the search query."""
+        if not hasattr(self, 'query_keywords') or not self.query_keywords:
+            return True
+        text_lower = text.lower()
+        matches = sum(1 for kw in self.query_keywords if kw in text_lower)
+        return matches >= min_matches
     
     def _format_salary(self, min_sal: Optional[int], max_sal: Optional[int]) -> str:
         """Format salary range."""
@@ -317,16 +346,16 @@ class FreeJobAPIs:
         return "Not specified"
     
     def _extract_skills(self, text: str) -> List[str]:
-        """Extract skills from text."""
+        """Extract skills from text using resume skills (priority) + defaults."""
         found = []
         text_lower = text.lower()
-        for skill in self.SKILL_KEYWORDS:
+        for skill in self.skill_keywords:
             if skill.lower() in text_lower:
                 found.append(skill)
         return found[:10]
 
 
-def search_free_jobs(query: str, location: str = "", num_results: int = 20) -> List[Dict]:
+def search_free_jobs(query: str, location: str = "", num_results: int = 20, resume_skills: List[str] = None) -> List[Dict]:
     """
     Search free job APIs (no API key required).
     
@@ -334,10 +363,11 @@ def search_free_jobs(query: str, location: str = "", num_results: int = 20) -> L
         query: Job search query
         location: Location filter  
         num_results: Number of results
+        resume_skills: Skills from user's resume for better matching
         
     Returns:
         List of job dictionaries
     """
-    api = FreeJobAPIs()
+    api = FreeJobAPIs(resume_skills=resume_skills)
     jobs = api.search_all(query, location, num_results)
     return [j.to_dict() for j in jobs]
