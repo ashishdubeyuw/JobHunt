@@ -505,6 +505,11 @@ def render_header():
         <p>Find your perfect job match powered by AI-driven resume analysis</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Mobile helper - show on first visit
+    if 'mobile_tip_shown' not in st.session_state:
+        st.info("📱 **Mobile users:** Tap the ☰ menu icon (top-left corner) to access upload & settings")
+        st.session_state.mobile_tip_shown = True
 
 
 def render_metrics(matched_jobs: List[MatchResult]):
