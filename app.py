@@ -341,6 +341,59 @@ st.markdown("""
         backdrop-filter: blur(10px);
         border-radius: 12px !important;
     }
+    
+    /* ===== FORCE ALL TEXT TO BE LIGHT/WHITE ===== */
+    .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown li,
+    .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6,
+    .stText, p, span, label, div, li, td, th,
+    .job-card *, .glass-card *,
+    [data-testid="stMarkdownContainer"] *,
+    [data-testid="stText"],
+    .element-container * {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Headings - brighter */
+    h1, h2, h3, h4 {
+        color: #ffffff !important;
+    }
+    
+    /* Job card titles */
+    .job-card h3, .job-card h4, .job-card strong, .job-card b {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+    }
+    
+    /* Labels and captions */
+    .stCaption, small, .css-1629p8f {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* Checkboxes and radio labels */
+    .stCheckbox label, .stRadio label, .stSelectbox label {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Expander text */
+    .streamlit-expanderContent *, .streamlit-expanderHeader * {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Sidebar text */
+    [data-testid="stSidebar"] * {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Tab text */
+    .stTabs [data-baseweb="tab"] {
+        color: #e2e8f0 !important;
+    }
+    
+    /* Code blocks */
+    code {
+        color: #c4b5fd !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
 </style>
 
 <script>
