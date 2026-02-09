@@ -342,6 +342,44 @@ st.markdown("""
         border-radius: 12px !important;
     }
 </style>
+
+<script>
+// Force sidebar toggle to always be visible
+const forceToggleVisible = () => {
+    // Find the collapse control button
+    const collapseBtn = document.querySelector('[data-testid="collapsedControl"]');
+    if (collapseBtn) {
+        collapseBtn.style.display = 'block';
+        collapseBtn.style.visibility = 'visible';
+        collapseBtn.style.opacity = '1';
+        collapseBtn.style.position = 'fixed';
+        collapseBtn.style.top = '0.5rem';
+        collapseBtn.style.left = '0.5rem';
+        collapseBtn.style.zIndex = '999999';
+        collapseBtn.style.background = 'rgba(102, 126, 234, 0.9)';
+        collapseBtn.style.borderRadius = '8px';
+        collapseBtn.style.padding = '0.5rem';
+        collapseBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
+    }
+    
+    // Also check for the header button
+    const headerBtn = document.querySelector('button[kind="header"]');
+    if (headerBtn) {
+        headerBtn.style.display = 'block';
+        headerBtn.style.visibility = 'visible';
+        headerBtn.style.opacity = '1';
+    }
+};
+
+// Run on load and periodically
+forceToggleVisible();
+setInterval(forceToggleVisible, 500);
+
+// Also run on any DOM changes
+const observer = new MutationObserver(forceToggleVisible);
+observer.observe(document.body, { childList: true, subtree: true });
+</script>
+
 """, unsafe_allow_html=True)
 
 
@@ -506,9 +544,63 @@ def render_header():
     </div>
     """, unsafe_allow_html=True)
     
-    # Mobile helper - show on first visit
+    # Custom Menu Button - uses components.html to escape iframe sandbox
+    import streamlit.components.v1 as components
+    components.html("""
+    <div style="position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;">
+        <button id="menuBtn" style="
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        ">☰ Menu</button>
+    </div>
+    <script>
+    document.getElementById('menuBtn').addEventListener('click', function() {
+        // Access the parent Streamlit document
+        const doc = window.parent.document;
+        
+        // Try multiple selectors to find the toggle
+        const selectors = [
+            '[data-testid="collapsedControl"]',
+            '[data-testid="collapsedControl"] button',
+            'button[kind="header"]',
+            '.css-1rs6os',
+            'section[data-testid="stSidebar"] button',
+        ];
+        
+        for (const sel of selectors) {
+            const btn = doc.querySelector(sel);
+            if (btn) {
+                btn.click();
+                return;
+            }
+        }
+        
+        // Fallback: toggle sidebar via CSS class manipulation
+        const sidebar = doc.querySelector('[data-testid="stSidebar"]');
+        if (sidebar) {
+            const isCollapsed = sidebar.getAttribute('aria-expanded') === 'false';
+            sidebar.setAttribute('aria-expanded', isCollapsed ? 'true' : 'false');
+            sidebar.style.display = isCollapsed ? 'block' : 'none';
+            sidebar.style.width = isCollapsed ? '21rem' : '0';
+            sidebar.style.minWidth = isCollapsed ? '21rem' : '0';
+            sidebar.style.opacity = isCollapsed ? '1' : '0';
+            sidebar.style.transform = isCollapsed ? 'translateX(0)' : 'translateX(-100%)';
+        }
+    });
+    </script>
+    """, height=60)
+
+    # Helper - show on first visit
     if 'mobile_tip_shown' not in st.session_state:
-        st.info("📱 **Mobile users:** Tap the ☰ menu icon (top-left corner) to access upload & settings")
+        st.info(" **Tip:** Look for the purple ☰ button (top-left) to open the menu for upload & settings")
         st.session_state.mobile_tip_shown = True
 
 
