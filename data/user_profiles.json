@@ -1,0 +1,17 @@
+{
+    "default_user": {
+        "email": null,
+        "phone": null,
+        "notification_channel": "email",
+        "schedule": null,
+        "resume_data": null,
+        "preferences": {
+            "job_types": [
+                "Full-time",
+                "Remote"
+            ],
+            "min_salary": 80000,
+            "keywords": []
+        }
+    }
+}

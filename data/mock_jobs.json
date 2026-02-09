@@ -1,0 +1,236 @@
+[
+    {
+        "id": "job_001",
+        "title": "Senior Software Engineer",
+        "company": "TechCorp Inc.",
+        "location": "San Francisco, CA (Remote)",
+        "salary": "$150,000 - $200,000",
+        "description": "We are looking for a Senior Software Engineer with 5+ years of experience in Python, JavaScript, and cloud technologies. You will lead the development of our core platform, mentor junior developers, and architect scalable solutions. Required skills: Python, React, AWS, Docker, Kubernetes, CI/CD pipelines. Experience with machine learning is a plus.",
+        "apply_url": "https://techcorp.example.com/careers/software-engineer",
+        "required_skills": [
+            "Python",
+            "JavaScript",
+            "AWS",
+            "Docker",
+            "Kubernetes",
+            "React"
+        ],
+        "experience_years": 5,
+        "posted_date": "2026-02-01"
+    },
+    {
+        "id": "job_002",
+        "title": "Data Scientist",
+        "company": "DataDriven Analytics",
+        "location": "New York, NY (Hybrid)",
+        "salary": "$130,000 - $170,000",
+        "description": "Join our data science team to build predictive models and derive insights from large datasets. You'll work with cross-functional teams to implement ML solutions. Required: Python, SQL, Machine Learning, TensorFlow or PyTorch, Statistics. 3+ years of experience in data science or related field.",
+        "apply_url": "https://datadriven.example.com/jobs/data-scientist",
+        "required_skills": [
+            "Python",
+            "SQL",
+            "Machine Learning",
+            "TensorFlow",
+            "PyTorch",
+            "Statistics"
+        ],
+        "experience_years": 3,
+        "posted_date": "2026-02-03"
+    },
+    {
+        "id": "job_003",
+        "title": "Product Manager",
+        "company": "InnovateTech",
+        "location": "Seattle, WA",
+        "salary": "$140,000 - $180,000",
+        "description": "Lead product strategy and roadmap for our SaaS platform. Work closely with engineering, design, and marketing teams. Requirements: 4+ years PM experience, strong analytical skills, experience with agile methodologies, excellent communication skills. MBA preferred.",
+        "apply_url": "https://innovatetech.example.com/careers/product-manager",
+        "required_skills": [
+            "Product Management",
+            "Agile",
+            "Analytics",
+            "Communication",
+            "Strategy",
+            "Roadmapping"
+        ],
+        "experience_years": 4,
+        "posted_date": "2026-02-02"
+    },
+    {
+        "id": "job_004",
+        "title": "Full Stack Developer",
+        "company": "StartupXYZ",
+        "location": "Austin, TX (Remote)",
+        "salary": "$100,000 - $140,000",
+        "description": "Build end-to-end features for our growing platform. We need someone comfortable with both frontend and backend development. Tech stack: Node.js, React, PostgreSQL, Redis, GraphQL. 2+ years of full-stack experience required.",
+        "apply_url": "https://startupxyz.example.com/jobs/fullstack",
+        "required_skills": [
+            "Node.js",
+            "React",
+            "PostgreSQL",
+            "Redis",
+            "GraphQL",
+            "JavaScript"
+        ],
+        "experience_years": 2,
+        "posted_date": "2026-02-05"
+    },
+    {
+        "id": "job_005",
+        "title": "Machine Learning Engineer",
+        "company": "AI Solutions Corp",
+        "location": "Boston, MA (Hybrid)",
+        "salary": "$160,000 - $210,000",
+        "description": "Design and deploy ML models at scale. Work on NLP, computer vision, and recommendation systems. Required: Python, TensorFlow/PyTorch, MLOps, AWS/GCP, 4+ years ML experience. PhD preferred but not required.",
+        "apply_url": "https://aisolutions.example.com/careers/ml-engineer",
+        "required_skills": [
+            "Python",
+            "TensorFlow",
+            "PyTorch",
+            "MLOps",
+            "AWS",
+            "NLP",
+            "Computer Vision"
+        ],
+        "experience_years": 4,
+        "posted_date": "2026-02-04"
+    },
+    {
+        "id": "job_006",
+        "title": "DevOps Engineer",
+        "company": "CloudFirst Systems",
+        "location": "Denver, CO (Remote)",
+        "salary": "$120,000 - $160,000",
+        "description": "Manage and optimize our cloud infrastructure. Implement CI/CD pipelines, monitoring, and security best practices. Required: AWS/Azure/GCP, Terraform, Docker, Kubernetes, Linux, Python/Bash scripting. 3+ years DevOps experience.",
+        "apply_url": "https://cloudfirst.example.com/jobs/devops",
+        "required_skills": [
+            "AWS",
+            "Terraform",
+            "Docker",
+            "Kubernetes",
+            "Linux",
+            "Python",
+            "CI/CD"
+        ],
+        "experience_years": 3,
+        "posted_date": "2026-02-06"
+    },
+    {
+        "id": "job_007",
+        "title": "UI/UX Designer",
+        "company": "DesignHub",
+        "location": "Los Angeles, CA",
+        "salary": "$90,000 - $130,000",
+        "description": "Create beautiful, user-centered designs for web and mobile applications. Conduct user research, create wireframes and prototypes. Required: Figma, Adobe XD, user research, prototyping, 3+ years design experience.",
+        "apply_url": "https://designhub.example.com/careers/designer",
+        "required_skills": [
+            "Figma",
+            "Adobe XD",
+            "User Research",
+            "Prototyping",
+            "UI Design",
+            "UX Design"
+        ],
+        "experience_years": 3,
+        "posted_date": "2026-02-07"
+    },
+    {
+        "id": "job_008",
+        "title": "Backend Engineer",
+        "company": "FinTech Solutions",
+        "location": "Chicago, IL (Hybrid)",
+        "salary": "$135,000 - $175,000",
+        "description": "Build robust backend services for our financial platform. Focus on security, scalability, and reliability. Required: Java or Go, PostgreSQL, Redis, Kafka, microservices architecture. 4+ years backend experience in fintech preferred.",
+        "apply_url": "https://fintechsolutions.example.com/jobs/backend",
+        "required_skills": [
+            "Java",
+            "Go",
+            "PostgreSQL",
+            "Redis",
+            "Kafka",
+            "Microservices",
+            "Security"
+        ],
+        "experience_years": 4,
+        "posted_date": "2026-02-03"
+    },
+    {
+        "id": "job_009",
+        "title": "Data Engineer",
+        "company": "BigData Co",
+        "location": "Remote (US)",
+        "salary": "$125,000 - $165,000",
+        "description": "Design and maintain data pipelines and warehouses. Work with petabyte-scale data. Required: Python, SQL, Spark, Airflow, AWS/GCP, dbt. 3+ years data engineering experience.",
+        "apply_url": "https://bigdataco.example.com/careers/data-engineer",
+        "required_skills": [
+            "Python",
+            "SQL",
+            "Spark",
+            "Airflow",
+            "AWS",
+            "dbt",
+            "ETL"
+        ],
+        "experience_years": 3,
+        "posted_date": "2026-02-05"
+    },
+    {
+        "id": "job_010",
+        "title": "Security Engineer",
+        "company": "SecureNet",
+        "location": "Washington, DC",
+        "salary": "$140,000 - $190,000",
+        "description": "Protect our infrastructure and applications from security threats. Conduct penetration testing, security audits, and incident response. Required: Security certifications (CISSP, CEH), Python, cloud security, 5+ years security experience.",
+        "apply_url": "https://securenet.example.com/jobs/security",
+        "required_skills": [
+            "Security",
+            "Penetration Testing",
+            "Python",
+            "Cloud Security",
+            "CISSP",
+            "Incident Response"
+        ],
+        "experience_years": 5,
+        "posted_date": "2026-02-06"
+    },
+    {
+        "id": "job_011",
+        "title": "Frontend Developer",
+        "company": "WebCraft Studios",
+        "location": "Miami, FL (Remote)",
+        "salary": "$95,000 - $135,000",
+        "description": "Build responsive, accessible web applications with modern JavaScript frameworks. Required: React or Vue.js, TypeScript, CSS/SASS, testing frameworks, 2+ years frontend experience.",
+        "apply_url": "https://webcraft.example.com/careers/frontend",
+        "required_skills": [
+            "React",
+            "Vue.js",
+            "TypeScript",
+            "CSS",
+            "SASS",
+            "JavaScript",
+            "Testing"
+        ],
+        "experience_years": 2,
+        "posted_date": "2026-02-07"
+    },
+    {
+        "id": "job_012",
+        "title": "AI Research Scientist",
+        "company": "DeepMind Labs",
+        "location": "Palo Alto, CA",
+        "salary": "$200,000 - $300,000",
+        "description": "Conduct cutting-edge AI research in areas like reinforcement learning, LLMs, and multimodal AI. Publish papers and transition research to products. Required: PhD in CS/ML, strong publication record, Python, PyTorch. 3+ years research experience.",
+        "apply_url": "https://deepmindlabs.example.com/research/scientist",
+        "required_skills": [
+            "Python",
+            "PyTorch",
+            "Machine Learning",
+            "Research",
+            "LLMs",
+            "Reinforcement Learning",
+            "Publications"
+        ],
+        "experience_years": 3,
+        "posted_date": "2026-02-01"
+    }
+]
