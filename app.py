@@ -455,7 +455,7 @@ def init_session_state():
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "web_search_enabled" not in st.session_state:
-        st.session_state.web_search_enabled = False
+        st.session_state.web_search_enabled = True
     if "search_query" not in st.session_state:
         st.session_state.search_query = ""
 
@@ -493,13 +493,14 @@ def render_sidebar():
             )
             
             if st.session_state.web_search_enabled:
-                st.success("✅ No API key required! Uses Google Jobs search.")
+                st.success("✅ No API key required! Searches real jobs automatically.")
                 
                 st.session_state.search_query = st.text_input(
-                    "Job Search Query",
-                    value=st.session_state.search_query or "Python Machine Learning Remote",
-                    placeholder="e.g., Python Developer Remote"
+                    "Job Search Query (optional)",
+                    value=st.session_state.search_query or "",
+                    placeholder="Leave empty to auto-search using your resume skills"
                 )
+                st.caption("💡 Leave blank — we'll use your resume skills to find matching jobs automatically")
                 
                 with st.expander("🔑 Optional: Add API for better results"):
                     st.caption("Our Google Jobs scraper works without API. Add these for more results:")
@@ -740,10 +741,79 @@ def render_job_card(match: MatchResult, index: int):
             st.markdown("#### Job Description")
             st.write(job.get("description", "No description available")[:500] + "...")
             
-            st.markdown("#### Required Skills")
-            skills = job.get("required_skills", [])
-            if skills:
-                st.markdown(" • ".join([f"`{s}`" for s in skills]))
+            # Skills section with match indicators
+            st.markdown("#### 🎯 Skills Match")
+            job_skills = job.get("required_skills", [])
+            resume_skills = st.session_state.resume_data.get("skills", []) if st.session_state.resume_data else []
+            resume_skills_lower = [s.lower() for s in resume_skills]
+            
+            if job_skills or resume_skills:
+                # Build skill badges HTML
+                matched_skills = []
+                unmatched_skills = []
+                
+                for skill in job_skills:
+                    if skill.lower() in resume_skills_lower:
+                        matched_skills.append(skill)
+                    else:
+                        unmatched_skills.append(skill)
+                
+                # Extra resume skills not in job
+                extra_resume = [s for s in resume_skills if s.lower() not in [js.lower() for js in job_skills]]
+                
+                badges_html = ""
+                
+                # Matched skills - green
+                for skill in matched_skills:
+                    badges_html += f'''<span title="✅ MATCHED - This skill is in your resume AND required by the job" 
+                        style="display:inline-block; margin:3px; padding:5px 12px; 
+                        background:rgba(34,197,94,0.25); border:1px solid rgba(34,197,94,0.6); 
+                        border-radius:20px; font-size:0.85rem; color:#4ade80; cursor:help;
+                        font-weight:600;">✅ {skill}</span>'''
+                
+                # Unmatched job skills - red/orange
+                for skill in unmatched_skills:
+                    badges_html += f'''<span title="❌ GAP - This skill is required but NOT in your resume" 
+                        style="display:inline-block; margin:3px; padding:5px 12px; 
+                        background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); 
+                        border-radius:20px; font-size:0.85rem; color:#f87171; cursor:help;
+                        font-weight:500;">❌ {skill}</span>'''
+                
+                # Stats summary
+                total_job = len(job_skills)
+                matched_count = len(matched_skills)
+                match_pct = int((matched_count / total_job * 100)) if total_job > 0 else 0
+                
+                st.markdown(f"""
+                <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px; margin-bottom:10px;
+                    border:1px solid rgba(255,255,255,0.1);">
+                    <div style="font-size:0.9rem; margin-bottom:8px; color:#a78bfa;">
+                        <strong>📊 Skill Match: {matched_count}/{total_job} skills ({match_pct}%)</strong>
+                        &nbsp;|&nbsp; ✅ Matched: {matched_count} &nbsp;|&nbsp; ❌ Gaps: {len(unmatched_skills)}
+                    </div>
+                    <div>{badges_html}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Show extra resume skills
+                if extra_resume[:5]:
+                    extra_html = ""
+                    for skill in extra_resume[:5]:
+                        extra_html += f'''<span title="💡 BONUS - You have this skill but it's not listed as required"
+                            style="display:inline-block; margin:3px; padding:4px 10px;
+                            background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.3);
+                            border-radius:20px; font-size:0.8rem; color:#93c5fd; cursor:help;">
+                            💡 {skill}</span>'''
+                    st.markdown(f"""
+                    <details style="margin-top:6px;">
+                        <summary style="cursor:pointer; color:#93c5fd; font-size:0.85rem;">
+                            💡 Your bonus skills ({len(extra_resume)} not required but valuable)
+                        </summary>
+                        <div style="margin-top:6px;">{extra_html}</div>
+                    </details>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown("_No skills data available_")
             
             st.divider()
             
@@ -790,7 +860,7 @@ def render_job_card(match: MatchResult, index: int):
 
 
 def render_job_list(matched_jobs: List[MatchResult]):
-    """Render the list of matched jobs."""
+    """Render the list of matched jobs with pagination."""
     if not matched_jobs:
         st.info("👆 Upload your resume to see matched jobs!")
         return
@@ -810,9 +880,45 @@ def render_job_list(matched_jobs: List[MatchResult]):
         st.warning("No jobs match your filter criteria.")
         return
     
-    # Render each job
-    for i, match in enumerate(filtered_jobs, 1):
+    # Pagination
+    JOBS_PER_PAGE = 10
+    total_pages = max(1, (len(filtered_jobs) + JOBS_PER_PAGE - 1) // JOBS_PER_PAGE)
+    
+    if 'job_page' not in st.session_state:
+        st.session_state.job_page = 0
+    
+    # Ensure page is in bounds
+    st.session_state.job_page = min(st.session_state.job_page, total_pages - 1)
+    
+    start = st.session_state.job_page * JOBS_PER_PAGE
+    end = min(start + JOBS_PER_PAGE, len(filtered_jobs))
+    page_jobs = filtered_jobs[start:end]
+    
+    st.markdown(f"**Page {st.session_state.job_page + 1} of {total_pages}** — Showing jobs {start + 1}-{end} of {len(filtered_jobs)}")
+    
+    # Render jobs for current page
+    for i, match in enumerate(page_jobs, start + 1):
         render_job_card(match, i)
+    
+    # Pagination buttons
+    if total_pages > 1:
+        st.markdown("---")
+        col_prev, col_info, col_next = st.columns([1, 2, 1])
+        
+        with col_prev:
+            if st.button("⬅️ Previous", disabled=(st.session_state.job_page == 0), use_container_width=True):
+                st.session_state.job_page -= 1
+                st.rerun()
+        
+        with col_info:
+            st.markdown(f"<div style='text-align:center; padding:0.5rem; color:#a78bfa;'>"
+                       f"<strong>Page {st.session_state.job_page + 1} / {total_pages}</strong></div>", 
+                       unsafe_allow_html=True)
+        
+        with col_next:
+            if st.button("Next ➡️", disabled=(st.session_state.job_page >= total_pages - 1), use_container_width=True):
+                st.session_state.job_page += 1
+                st.rerun()
 
 
 def render_cover_letter_generator():
@@ -917,10 +1023,9 @@ def run_matching():
         if st.session_state.search_query:
             search_query = st.session_state.search_query
         elif resume_skills:
-            # Use top 5 resume skills as search query
-            top_skills = resume_skills[:5]
-            search_query = " ".join(top_skills) + " jobs Remote"
-            st.info(f"🔍 Searching jobs based on your skills: {', '.join(top_skills)}")
+            # Use all resume skills as search query
+            search_query = " ".join(resume_skills) + " jobs Remote"
+            st.info(f"🔍 Searching jobs based on your skills: {', '.join(resume_skills)}")
         else:
             search_query = "Software Developer Remote"
         
@@ -930,7 +1035,8 @@ def run_matching():
                 searcher = WebJobSearch()
                 job_listings = searcher.search_jobs(
                     search_query,
-                    num_results=20
+                    num_results=20,
+                    resume_skills=resume_skills
                 )
                 jobs = [j.to_dict() for j in job_listings]
                 
@@ -958,8 +1064,9 @@ def run_matching():
     st.session_state.matching_engine = engine
     
     # Match resume
-    matches = engine.match_resume(st.session_state.resume_data, top_k=10)
+    matches = engine.match_resume(st.session_state.resume_data, top_k=20)
     st.session_state.matched_jobs = matches
+    st.session_state.job_page = 0  # Reset pagination
     
     return matches
 
