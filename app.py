@@ -35,7 +35,7 @@ st.set_page_config(
     page_title="Job Genie AI",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 # Custom CSS - Clean, accessible design with good color contrast
@@ -187,7 +187,6 @@ st.markdown("""
     @media (max-width: 768px) {
         [data-testid="stSidebar"] {
             min-width: unset !important;
-            transform: unset !important;
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
