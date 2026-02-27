@@ -32,7 +32,7 @@ from modules.web_search import WebJobSearch, search_web_jobs
 
 # Page configuration
 st.set_page_config(
-    page_title="Job Matching AI",
+    page_title="Job Genie AI",
     page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -543,7 +543,7 @@ def render_header():
     """Render the header section."""
     st.markdown("""
     <div class="header-gradient">
-        <h1>🎯 Job Matching AI</h1>
+        <h1>🎯 Job Genie AI</h1>
         <p>Find your perfect job match powered by AI-driven resume analysis</p>
     </div>
     """, unsafe_allow_html=True)
