@@ -166,7 +166,7 @@ st.markdown("""
         border-color: #d97706;
     }
 
-    /* ===== SIDEBAR - always visible, fixed ===== */
+    /* ===== SIDEBAR - desktop: always visible and fixed ===== */
     [data-testid="stSidebar"] {
         background: #0f172a !important;
         border-right: 2px solid #2d3561 !important;
@@ -177,10 +177,32 @@ st.markdown("""
         height: 100vh !important;
     }
 
-    /* Hide the collapse/expand toggle arrow */
+    /* Hide the collapse/expand toggle on desktop only */
     [data-testid="collapsedControl"],
     button[data-testid="baseButton-headerNoPadding"] {
         display: none !important;
+    }
+
+    /* ===== SIDEBAR - mobile: collapsible via native Streamlit toggle ===== */
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] {
+            min-width: unset !important;
+            transform: unset !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            z-index: 999 !important;
+            width: 85vw !important;
+            max-width: 20rem !important;
+            overflow-y: auto !important;
+        }
+
+        /* Show the collapse/expand toggle on mobile */
+        [data-testid="collapsedControl"],
+        button[data-testid="baseButton-headerNoPadding"] {
+            display: flex !important;
+        }
     }
 
     [data-testid="stSidebar"] .stMarkdown {
