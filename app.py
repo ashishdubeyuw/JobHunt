@@ -38,311 +38,299 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS - Glassmorphism Design + WordPress-inspired styling
+# Custom CSS - Clean, accessible design with good color contrast
 st.markdown("""
 <style>
     /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-    
-    /* ===== GLASSMORPHISM BASE STYLES ===== */
-    
-    /* Animated gradient background */
+
+    /* ===== BASE STYLES ===== */
+
+    /* Simple solid dark background - no distracting animation */
     .stApp {
-        background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0f0c29);
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
+        background: #1a1a2e;
     }
-    
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
+
     /* Global Styles */
     html, body, [class*="css"] {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        color: #e2e8f0;
+        color: #e8eaf0;
     }
-    
+
     /* Main container */
     .main .block-container {
         padding: 1.5rem 2rem;
         max-width: 1400px;
     }
-    
-    /* ===== GLASSMORPHISM HEADER ===== */
+
+    /* ===== HEADER ===== */
     .header-gradient {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: #16213e;
+        border: 1px solid #2d3561;
         padding: 2.5rem;
-        border-radius: 24px;
+        border-radius: 16px;
         margin-bottom: 2rem;
-        color: white;
         text-align: center;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
-    
+
     .header-gradient h1 {
-        color: white !important;
+        color: #ffffff !important;
         margin: 0;
         font-weight: 800;
         font-size: 2.5rem;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
-    
+
     .header-gradient p {
-        color: rgba(255,255,255,0.85);
+        color: #c5cae9;
         margin: 0.75rem 0 0 0;
         font-size: 1.1rem;
     }
-    
-    /* ===== GLASSMORPHISM CARDS ===== */
+
+    /* ===== CARDS ===== */
     .glass-card, .job-card {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
+        background: #16213e;
+        border: 1px solid #2d3561;
+        border-radius: 16px;
         padding: 1.5rem;
         margin-bottom: 1rem;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
-    
+
     .glass-card:hover, .job-card:hover {
-        background: rgba(255, 255, 255, 0.12);
-        transform: translateY(-4px);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        border-color: rgba(255, 255, 255, 0.25);
+        background: #1e2a4a;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        border-color: #4a5568;
     }
-    
-    /* ===== METRIC CARDS - GLASSMORPHISM ===== */
+
+    /* ===== METRIC CARDS ===== */
     .metric-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 16px;
+        background: #16213e;
+        border: 1px solid #2d3561;
+        border-radius: 12px;
         padding: 1.25rem;
         text-align: center;
         transition: all 0.3s ease;
     }
-    
+
     .metric-card:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: #1e2a4a;
         transform: scale(1.02);
     }
-    
+
     .metric-value {
         font-size: 2.25rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #7c9ef8;
     }
-    
+
+    .metric-value-success {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: #4ade80;
+    }
+
     .metric-label {
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: #a0aec0;
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
-    /* ===== SCORE BADGES - GLASSMORPHISM ===== */
+
+    /* ===== SCORE BADGES ===== */
     .score-badge {
         display: inline-block;
         padding: 0.4rem 1rem;
         border-radius: 999px;
         font-size: 0.9rem;
         font-weight: 700;
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255,255,255,0.2);
+        border: 1px solid transparent;
     }
-    
-    .score-excellent { 
-        background: rgba(34, 197, 94, 0.3); 
-        color: #86efac; 
-        border-color: rgba(34, 197, 94, 0.5);
-        box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+
+    .score-excellent {
+        background: #14532d;
+        color: #86efac;
+        border-color: #16a34a;
     }
-    .score-good { 
-        background: rgba(59, 130, 246, 0.3); 
-        color: #93c5fd; 
-        border-color: rgba(59, 130, 246, 0.5);
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    .score-good {
+        background: #1e3a5f;
+        color: #93c5fd;
+        border-color: #2563eb;
     }
-    .score-partial { 
-        background: rgba(245, 158, 11, 0.3); 
-        color: #fcd34d; 
-        border-color: rgba(245, 158, 11, 0.5);
-        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    .score-partial {
+        background: #451a03;
+        color: #fcd34d;
+        border-color: #d97706;
     }
-    
-    /* ===== SIDEBAR - GLASSMORPHISM ===== */
+
+    /* ===== SIDEBAR - always visible, fixed ===== */
     [data-testid="stSidebar"] {
-        background: rgba(15, 12, 41, 0.95) !important;
-        backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        background: #0f172a !important;
+        border-right: 2px solid #2d3561 !important;
+        min-width: 21rem !important;
+        transform: none !important;
+        position: sticky !important;
+        top: 0 !important;
+        height: 100vh !important;
     }
-    
+
+    /* Hide the collapse/expand toggle arrow */
+    [data-testid="collapsedControl"],
+    button[data-testid="baseButton-headerNoPadding"] {
+        display: none !important;
+    }
+
     [data-testid="stSidebar"] .stMarkdown {
-        color: #e2e8f0;
+        color: #e8eaf0;
     }
-    
-    /* ===== BUTTONS - GLASSMORPHISM ===== */
+
+    /* ===== BUTTONS ===== */
     .stButton > button {
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
-        backdrop-filter: blur(10px);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
+        background: #3d52a0;
+        color: #ffffff;
+        border: 1px solid #4a6cf7;
+        border-radius: 10px;
         padding: 0.6rem 1.5rem;
         font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(61, 82, 160, 0.4);
     }
-    
+
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        background: linear-gradient(135deg, rgba(102, 126, 234, 1) 0%, rgba(118, 75, 162, 1) 100%);
+        background: #4a6cf7;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(74, 108, 247, 0.5);
     }
-    
-    /* ===== INPUTS - GLASSMORPHISM ===== */
+
+    /* ===== INPUTS ===== */
     .stTextInput input, .stSelectbox select, .stTextArea textarea {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        border-radius: 12px !important;
-        color: #e2e8f0 !important;
-        backdrop-filter: blur(8px);
+        background: #16213e !important;
+        border: 1px solid #2d3561 !important;
+        border-radius: 10px !important;
+        color: #e8eaf0 !important;
     }
-    
+
     .stTextInput input:focus, .stSelectbox select:focus {
-        border-color: rgba(102, 126, 234, 0.6) !important;
-        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3) !important;
+        border-color: #4a6cf7 !important;
+        box-shadow: 0 0 0 2px rgba(74, 108, 247, 0.3) !important;
     }
-    
-    /* ===== FILE UPLOADER - GLASSMORPHISM ===== */
+
+    /* ===== FILE UPLOADER ===== */
     .stFileUploader {
-        background: rgba(255, 255, 255, 0.05);
-        border: 2px dashed rgba(255, 255, 255, 0.3);
-        border-radius: 16px;
+        background: #16213e;
+        border: 2px dashed #4a5568;
+        border-radius: 12px;
         padding: 1.5rem;
         transition: all 0.3s ease;
     }
-    
+
     .stFileUploader:hover {
-        border-color: rgba(102, 126, 234, 0.6);
-        background: rgba(102, 126, 234, 0.1);
+        border-color: #4a6cf7;
+        background: #1e2a4a;
     }
-    
-    /* ===== EXPANDER - GLASSMORPHISM ===== */
+
+    /* ===== EXPANDER ===== */
     .streamlit-expanderHeader {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border-radius: 12px;
+        background: #16213e !important;
+        border-radius: 10px;
         font-weight: 600;
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
+
     .streamlit-expanderContent {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 0 0 12px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #0f172a;
+        border-radius: 0 0 10px 10px;
+        border: 1px solid #2d3561;
     }
-    
+
     /* ===== DIVIDERS ===== */
     hr {
         border: none;
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: #2d3561;
         margin: 1.5rem 0;
     }
-    
+
     /* ===== RESPONSIVE DESIGN ===== */
     @media (max-width: 768px) {
         .main .block-container {
             padding: 0.75rem 1rem;
         }
-        
+
         .header-gradient {
             padding: 1.5rem 1rem;
-            border-radius: 16px;
+            border-radius: 12px;
         }
-        
+
         .header-gradient h1 {
             font-size: 1.75rem;
         }
-        
+
         .glass-card, .job-card {
             padding: 1rem;
-            border-radius: 12px;
+            border-radius: 10px;
         }
-        
+
         .metric-value {
             font-size: 1.75rem;
         }
     }
-    
+
     /* ===== HIDE STREAMLIT BRANDING ===== */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-    
+
     /* ===== SCROLLBAR STYLING ===== */
     ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
     }
-    
+
     ::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
+        background: #16213e;
         border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.2);
+        background: #2d3561;
         border-radius: 4px;
     }
-    
+
     ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: #4a5568;
     }
-    
+
     /* ===== LINKS ===== */
     a {
-        color: #a78bfa;
+        color: #7c9ef8;
         text-decoration: none;
         transition: all 0.2s ease;
     }
-    
+
     a:hover {
-        color: #c4b5fd;
-        text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+        color: #a5b4fc;
+        text-decoration: underline;
     }
-    
+
     /* ===== METRICS OVERRIDE ===== */
     [data-testid="stMetricValue"] {
-        color: #a78bfa !important;
+        color: #7c9ef8 !important;
     }
-    
+
     [data-testid="stMetricLabel"] {
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: #a0aec0 !important;
     }
-    
+
     /* ===== INFO/SUCCESS/WARNING BOXES ===== */
     .stAlert {
-        background: rgba(255, 255, 255, 0.08) !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(10px);
-        border-radius: 12px !important;
+        border-radius: 10px !important;
     }
-    
-    /* ===== FORCE ALL TEXT TO BE LIGHT/WHITE ===== */
+
+    /* ===== TEXT COLORS ===== */
     .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown li,
     .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6,
     .stText, p, span, label, div, li, td, th,
@@ -350,89 +338,51 @@ st.markdown("""
     [data-testid="stMarkdownContainer"] *,
     [data-testid="stText"],
     .element-container * {
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
-    /* Headings - brighter */
+
+    /* Headings */
     h1, h2, h3, h4 {
         color: #ffffff !important;
     }
-    
+
     /* Job card titles */
     .job-card h3, .job-card h4, .job-card strong, .job-card b {
         color: #ffffff !important;
         font-weight: 700 !important;
     }
-    
+
     /* Labels and captions */
-    .stCaption, small, .css-1629p8f {
-        color: rgba(255, 255, 255, 0.7) !important;
+    .stCaption, small {
+        color: #a0aec0 !important;
     }
-    
+
     /* Checkboxes and radio labels */
     .stCheckbox label, .stRadio label, .stSelectbox label {
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
+
     /* Expander text */
     .streamlit-expanderContent *, .streamlit-expanderHeader * {
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
+
     /* Sidebar text */
     [data-testid="stSidebar"] * {
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
+
     /* Tab text */
     .stTabs [data-baseweb="tab"] {
-        color: #e2e8f0 !important;
+        color: #e8eaf0 !important;
     }
-    
+
     /* Code blocks */
     code {
-        color: #c4b5fd !important;
-        background: rgba(255, 255, 255, 0.1) !important;
+        color: #a5b4fc !important;
+        background: #16213e !important;
     }
 </style>
-
-<script>
-// Force sidebar toggle to always be visible
-const forceToggleVisible = () => {
-    // Find the collapse control button
-    const collapseBtn = document.querySelector('[data-testid="collapsedControl"]');
-    if (collapseBtn) {
-        collapseBtn.style.display = 'block';
-        collapseBtn.style.visibility = 'visible';
-        collapseBtn.style.opacity = '1';
-        collapseBtn.style.position = 'fixed';
-        collapseBtn.style.top = '0.5rem';
-        collapseBtn.style.left = '0.5rem';
-        collapseBtn.style.zIndex = '999999';
-        collapseBtn.style.background = 'rgba(102, 126, 234, 0.9)';
-        collapseBtn.style.borderRadius = '8px';
-        collapseBtn.style.padding = '0.5rem';
-        collapseBtn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
-    }
-    
-    // Also check for the header button
-    const headerBtn = document.querySelector('button[kind="header"]');
-    if (headerBtn) {
-        headerBtn.style.display = 'block';
-        headerBtn.style.visibility = 'visible';
-        headerBtn.style.opacity = '1';
-    }
-};
-
-// Run on load and periodically
-forceToggleVisible();
-setInterval(forceToggleVisible, 500);
-
-// Also run on any DOM changes
-const observer = new MutationObserver(forceToggleVisible);
-observer.observe(document.body, { childList: true, subtree: true });
-</script>
-
 """, unsafe_allow_html=True)
 
 
@@ -597,56 +547,6 @@ def render_header():
         <p>Find your perfect job match powered by AI-driven resume analysis</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Custom Menu Button - directly toggles sidebar via CSS
-    import streamlit.components.v1 as components
-    components.html("""
-    <div id="menuBtnWrap" style="position: fixed; top: 0.75rem; left: 0.75rem; z-index: 999999;">
-        <button id="menuBtn" style="
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 0.75rem 1.25rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        ">☰ Menu</button>
-    </div>
-    <script>
-    document.getElementById('menuBtn').addEventListener('click', function() {
-        const doc = window.parent.document;
-        const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (!sidebar) return;
-        
-        // Check current state
-        const isHidden = sidebar.style.transform === 'translateX(-100%)' || 
-                         sidebar.offsetWidth < 10 ||
-                         getComputedStyle(sidebar).transform.includes('-');
-        
-        if (isHidden) {
-            // Show sidebar
-            sidebar.style.transform = 'translateX(0)';
-            sidebar.style.width = '21rem';
-            sidebar.style.minWidth = '21rem';
-            sidebar.style.visibility = 'visible';
-            sidebar.style.position = 'relative';
-        } else {
-            // Hide sidebar
-            sidebar.style.transform = 'translateX(-100%)';
-            sidebar.style.width = '0';
-            sidebar.style.minWidth = '0';
-        }
-    });
-    </script>
-    """, height=60)
-
-    # Helper - show on first visit
-    if 'mobile_tip_shown' not in st.session_state:
-        st.info(" **Tip:** Look for the purple ☰ button (top-left) to open the menu for upload & settings")
-        st.session_state.mobile_tip_shown = True
 
 
 def render_metrics(matched_jobs: List[MatchResult]):
@@ -665,7 +565,7 @@ def render_metrics(matched_jobs: List[MatchResult]):
         excellent = sum(1 for j in matched_jobs if j.final_score >= 0.8)
         st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-value" style="color: #16a34a;">{excellent}</div>
+            <div class="metric-value-success">{excellent}</div>
             <div class="metric-label">Excellent Matches</div>
         </div>
         """, unsafe_allow_html=True)
@@ -767,16 +667,16 @@ def render_job_card(match: MatchResult, index: int):
                 for skill in matched_skills:
                     badges_html += f'''<span title="✅ MATCHED - This skill is in your resume AND required by the job" 
                         style="display:inline-block; margin:3px; padding:5px 12px; 
-                        background:rgba(34,197,94,0.25); border:1px solid rgba(34,197,94,0.6); 
-                        border-radius:20px; font-size:0.85rem; color:#4ade80; cursor:help;
+                        background:#14532d; border:1px solid #16a34a; 
+                        border-radius:20px; font-size:0.85rem; color:#86efac; cursor:help;
                         font-weight:600;">✅ {skill}</span>'''
                 
                 # Unmatched job skills - red/orange
                 for skill in unmatched_skills:
                     badges_html += f'''<span title="❌ GAP - This skill is required but NOT in your resume" 
                         style="display:inline-block; margin:3px; padding:5px 12px; 
-                        background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); 
-                        border-radius:20px; font-size:0.85rem; color:#f87171; cursor:help;
+                        background:#450a0a; border:1px solid #b91c1c; 
+                        border-radius:20px; font-size:0.85rem; color:#fca5a5; cursor:help;
                         font-weight:500;">❌ {skill}</span>'''
                 
                 # Stats summary
@@ -785,9 +685,9 @@ def render_job_card(match: MatchResult, index: int):
                 match_pct = int((matched_count / total_job * 100)) if total_job > 0 else 0
                 
                 st.markdown(f"""
-                <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px; margin-bottom:10px;
-                    border:1px solid rgba(255,255,255,0.1);">
-                    <div style="font-size:0.9rem; margin-bottom:8px; color:#a78bfa;">
+                <div style="background:#16213e; border-radius:12px; padding:12px; margin-bottom:10px;
+                    border:1px solid #2d3561;">
+                    <div style="font-size:0.9rem; margin-bottom:8px; color:#7c9ef8;">
                         <strong>📊 Skill Match: {matched_count}/{total_job} skills ({match_pct}%)</strong>
                         &nbsp;|&nbsp; ✅ Matched: {matched_count} &nbsp;|&nbsp; ❌ Gaps: {len(unmatched_skills)}
                     </div>
@@ -801,12 +701,12 @@ def render_job_card(match: MatchResult, index: int):
                     for skill in extra_resume[:5]:
                         extra_html += f'''<span title="💡 BONUS - You have this skill but it's not listed as required"
                             style="display:inline-block; margin:3px; padding:4px 10px;
-                            background:rgba(96,165,250,0.15); border:1px solid rgba(96,165,250,0.3);
+                            background:#1e3a5f; border:1px solid #2563eb;
                             border-radius:20px; font-size:0.8rem; color:#93c5fd; cursor:help;">
                             💡 {skill}</span>'''
                     st.markdown(f"""
                     <details style="margin-top:6px;">
-                        <summary style="cursor:pointer; color:#93c5fd; font-size:0.85rem;">
+                        <summary style="cursor:pointer; color:#7c9ef8; font-size:0.85rem;">
                             💡 Your bonus skills ({len(extra_resume)} not required but valuable)
                         </summary>
                         <div style="margin-top:6px;">{extra_html}</div>
