@@ -35,7 +35,7 @@ st.set_page_config(
     page_title="Job Genie AI",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="collapsed"
 )
 
 # Custom CSS - Clean, accessible design with good color contrast
@@ -166,21 +166,27 @@ st.markdown("""
         border-color: #d97706;
     }
 
-    /* ===== SIDEBAR - desktop: always visible and fixed ===== */
+    /* ===== SIDEBAR BASE ===== */
     [data-testid="stSidebar"] {
         background: #0f172a !important;
         border-right: 2px solid #2d3561 !important;
-        min-width: 21rem !important;
-        transform: none !important;
-        position: sticky !important;
-        top: 0 !important;
-        height: 100vh !important;
     }
 
-    /* Hide the collapse/expand toggle on desktop only */
-    [data-testid="collapsedControl"],
-    button[data-testid="baseButton-headerNoPadding"] {
-        display: none !important;
+    /* ===== SIDEBAR - desktop: always visible and fixed ===== */
+    @media (min-width: 769px) {
+        [data-testid="stSidebar"] {
+            min-width: 21rem !important;
+            transform: none !important;
+            position: sticky !important;
+            top: 0 !important;
+            height: 100vh !important;
+        }
+
+        /* Hide the collapse/expand toggle on desktop only */
+        [data-testid="collapsedControl"],
+        button[data-testid="baseButton-headerNoPadding"] {
+            display: none !important;
+        }
     }
 
     /* ===== SIDEBAR - mobile: collapsible via native Streamlit toggle ===== */
@@ -192,8 +198,8 @@ st.markdown("""
             left: 0 !important;
             height: 100vh !important;
             z-index: 999 !important;
-            width: 85vw !important;
-            max-width: 20rem !important;
+            width: 78vw !important;
+            max-width: 18rem !important;
             overflow-y: auto !important;
         }
 
