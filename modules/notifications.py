@@ -9,6 +9,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import List, Dict, Optional
 
+from .security import escape_html, sanitize_external_url
+
 try:
     from twilio.rest import Client as TwilioClient
     TWILIO_AVAILABLE = True
@@ -133,6 +135,11 @@ def _create_email_html(jobs: List[Dict]) -> str:
     for i, job in enumerate(jobs[:5], 1):
         score = job.get("score", job.get("final_score", 0))
         score_pct = int(score * 100) if score <= 1 else int(score)
+        title = escape_html(job.get("title", "Position"))
+        company = escape_html(job.get("company", "Company"))
+        location = escape_html(job.get("location", "Location"))
+        salary = escape_html(job.get("salary", "Salary not specified"))
+        apply_url = sanitize_external_url(job.get("apply_url", "#"))
         
         # Color based on score
         if score_pct >= 80:
@@ -149,19 +156,19 @@ def _create_email_html(jobs: List[Dict]) -> str:
         <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 16px; background-color: #ffffff;">
             <div style="display: flex; justify-content: space-between; align-items: start;">
                 <div>
-                    <h3 style="margin: 0 0 4px 0; color: #1f2937;">{i}. {job.get('title', 'Position')}</h3>
-                    <p style="margin: 0; color: #6b7280;">{job.get('company', 'Company')} • {job.get('location', 'Location')}</p>
+                    <h3 style="margin: 0 0 4px 0; color: #1f2937;">{i}. {title}</h3>
+                    <p style="margin: 0; color: #6b7280;">{company} • {location}</p>
                 </div>
                 <span style="background-color: {color}; color: white; padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600;">
                     {score_pct}% {badge}
                 </span>
             </div>
             <p style="margin: 12px 0; color: #374151; font-size: 14px;">
-                {job.get('salary', 'Salary not specified')}
+                {salary}
             </p>
-            <a href="{job.get('apply_url', '#')}" 
+            <a href="{apply_url}" 
                style="display: inline-block; background-color: #4f46e5; color: white; text-decoration: none; 
-                      padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500;">
+                       padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500;">
                 Apply Now →
             </a>
         </div>
@@ -203,13 +210,14 @@ def _create_email_text(jobs: List[Dict]) -> str:
     for i, job in enumerate(jobs[:5], 1):
         score = job.get("score", job.get("final_score", 0))
         score_pct = int(score * 100) if score <= 1 else int(score)
+        apply_url = sanitize_external_url(job.get("apply_url", "See website"), fallback="See website")
         
         lines.append(f"{i}. {job.get('title', 'Position')}")
         lines.append(f"   Company: {job.get('company', 'N/A')}")
         lines.append(f"   Location: {job.get('location', 'N/A')}")
         lines.append(f"   Salary: {job.get('salary', 'Not specified')}")
         lines.append(f"   Match Score: {score_pct}%")
-        lines.append(f"   Apply: {job.get('apply_url', 'See website')}")
+        lines.append(f"   Apply: {apply_url}")
         lines.append("")
     
     lines.append("-" * 40)
@@ -225,6 +233,7 @@ def _create_whatsapp_message(jobs: List[Dict]) -> str:
     for i, job in enumerate(jobs[:5], 1):
         score = job.get("score", job.get("final_score", 0))
         score_pct = int(score * 100) if score <= 1 else int(score)
+        apply_url = sanitize_external_url(job.get("apply_url", "Apply on website"), fallback="Apply on website")
         
         emoji = "🟢" if score_pct >= 80 else "🔵" if score_pct >= 60 else "🟡"
         
@@ -232,7 +241,7 @@ def _create_whatsapp_message(jobs: List[Dict]) -> str:
         lines.append(f"   📍 {job.get('company', 'Company')} • {job.get('location', 'Location')}")
         lines.append(f"   💰 {job.get('salary', 'Salary TBD')}")
         lines.append(f"   📊 Match: {score_pct}%")
-        lines.append(f"   🔗 {job.get('apply_url', 'Apply on website')}")
+        lines.append(f"   🔗 {apply_url}")
         lines.append("")
     
     lines.append("_Powered by Job Matching AI_")

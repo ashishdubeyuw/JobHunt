@@ -6,6 +6,7 @@ Run with: pytest tests/test_app.py -v
 import os
 import sys
 import json
+import io
 import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -124,6 +125,26 @@ class TestResumeParser:
         email = parser.extract_email(test_text)
         
         assert email == "john.doe@example.com"
+    
+    def test_parse_pdf_rejects_invalid_upload(self):
+        from modules.parsers import ResumeParser
+        parser = ResumeParser()
+        
+        fake_file = io.BytesIO(b"not-a-pdf")
+        fake_file.name = "resume.pdf"
+        
+        with pytest.raises(ValueError, match="valid PDF"):
+            parser.parse_pdf(fake_file)
+    
+    def test_parse_pdf_rejects_oversized_upload(self):
+        from modules.parsers import ResumeParser
+        parser = ResumeParser()
+        
+        large_file = io.BytesIO(b"%PDF-" + b"a" * (5 * 1024 * 1024 + 1))
+        large_file.name = "resume.pdf"
+        
+        with pytest.raises(ValueError, match="5 MB"):
+            parser.parse_pdf(large_file)
 
 
 class TestMatchingEngine:
@@ -306,6 +327,27 @@ class TestNotifications:
         assert "Data Scientist" in message
         assert "AI Corp" in message
         assert "90%" in message
+    
+    def test_email_html_escapes_untrusted_content(self):
+        from modules.notifications import _create_email_html
+        
+        jobs = [
+            {
+                "title": '<script>alert("xss")</script>',
+                "company": "ACME & Co",
+                "location": "Remote",
+                "salary": "$100k",
+                "score": 0.85,
+                "apply_url": "javascript:alert(1)"
+            }
+        ]
+        
+        html = _create_email_html(jobs)
+        
+        assert "&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;" in html
+        assert "ACME &amp; Co" in html
+        assert 'href="#"' in html
+        assert "javascript:alert(1)" not in html
 
 
 # Integration test
