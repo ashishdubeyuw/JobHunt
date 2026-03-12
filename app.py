@@ -8,6 +8,7 @@ A comprehensive job matching platform using LlamaIndex, LangChain, and Google Ge
 import os
 import sys
 import json
+from html import escape
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -28,6 +29,7 @@ from modules.matching_engine import MatchingEngine, MatchResult
 from modules.agents import RecruiterAssistant, CoverLetterGenerator
 from modules.scheduler import JobSearchScheduler, UserProfile
 from modules.notifications import send_email_notification, send_whatsapp_notification
+from modules.security import sanitize_external_url
 from modules.web_search import WebJobSearch, search_web_jobs
 
 # Page configuration
@@ -512,16 +514,21 @@ def render_sidebar():
         if uploaded_file is not None:
             with st.spinner("📖 Parsing resume..."):
                 parser = ResumeParser()
-                resume_data = parser.parse_pdf(uploaded_file)
-                st.session_state.resume_data = resume_data
-                
-                # Show parsed info
-                st.success("✅ Resume parsed!")
-                with st.expander("View extracted info"):
-                    st.write(f"**Skills:** {len(resume_data.get('skills', []))} found")
-                    st.write(f"**Experience:** {resume_data.get('experience_years', 0)} years")
-                    if resume_data.get('email'):
-                        st.write(f"**Email:** {resume_data['email']}")
+                try:
+                    resume_data = parser.parse_pdf(uploaded_file)
+                except ValueError as exc:
+                    st.session_state.resume_data = None
+                    st.error(f"⚠️ {exc}")
+                else:
+                    st.session_state.resume_data = resume_data
+                    
+                    # Show parsed info
+                    st.success("✅ Resume parsed!")
+                    with st.expander("View extracted info"):
+                        st.write(f"**Skills:** {len(resume_data.get('skills', []))} found")
+                        st.write(f"**Experience:** {resume_data.get('experience_years', 0)} years")
+                        if resume_data.get('email'):
+                            st.write(f"**Email:** {resume_data['email']}")
         
         st.divider()
         
@@ -692,19 +699,21 @@ def render_job_card(match: MatchResult, index: int):
                 
                 # Matched skills - green
                 for skill in matched_skills:
+                    safe_skill = escape(skill)
                     badges_html += f'''<span title="✅ MATCHED - This skill is in your resume AND required by the job" 
                         style="display:inline-block; margin:3px; padding:5px 12px; 
                         background:#14532d; border:1px solid #16a34a; 
                         border-radius:20px; font-size:0.85rem; color:#86efac; cursor:help;
-                        font-weight:600;">✅ {skill}</span>'''
+                        font-weight:600;">✅ {safe_skill}</span>'''
                 
                 # Unmatched job skills - red/orange
                 for skill in unmatched_skills:
+                    safe_skill = escape(skill)
                     badges_html += f'''<span title="❌ GAP - This skill is required but NOT in your resume" 
                         style="display:inline-block; margin:3px; padding:5px 12px; 
                         background:#450a0a; border:1px solid #b91c1c; 
                         border-radius:20px; font-size:0.85rem; color:#fca5a5; cursor:help;
-                        font-weight:500;">❌ {skill}</span>'''
+                        font-weight:500;">❌ {safe_skill}</span>'''
                 
                 # Stats summary
                 total_job = len(job_skills)
@@ -726,11 +735,12 @@ def render_job_card(match: MatchResult, index: int):
                 if extra_resume[:5]:
                     extra_html = ""
                     for skill in extra_resume[:5]:
+                        safe_skill = escape(skill)
                         extra_html += f'''<span title="💡 BONUS - You have this skill but it's not listed as required"
                             style="display:inline-block; margin:3px; padding:4px 10px;
                             background:#1e3a5f; border:1px solid #2563eb;
                             border-radius:20px; font-size:0.8rem; color:#93c5fd; cursor:help;">
-                            💡 {skill}</span>'''
+                            💡 {safe_skill}</span>'''
                     st.markdown(f"""
                     <details style="margin-top:6px;">
                         <summary style="cursor:pointer; color:#7c9ef8; font-size:0.85rem;">
@@ -761,11 +771,11 @@ def render_job_card(match: MatchResult, index: int):
             st.divider()
             
             # Actions - Apply link opens in new tab
-            apply_url = job.get("apply_url", "#")
+            apply_url = sanitize_external_url(job.get("apply_url", "#"))
             col_x, col_y = st.columns(2)
             with col_x:
                 st.markdown(f'''
-                <a href="{apply_url}" target="_blank" style="
+                <a href="{apply_url}" target="_blank" rel="noopener noreferrer" style="
                     display: inline-block;
                     width: 100%;
                     padding: 0.5rem 1rem;

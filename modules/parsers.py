@@ -4,9 +4,10 @@ Extract text and structured information from PDF resumes
 """
 
 import re
-import io
 from typing import Dict, List, Optional, Tuple
 from pathlib import Path
+
+from .security import validate_pdf_upload
 
 try:
     from pypdf import PdfReader
@@ -63,6 +64,7 @@ class ResumeParser:
         Returns:
             Dictionary with extracted resume data
         """
+        validate_pdf_upload(file_input)
         self.text = self._extract_text(file_input)
         
         self.parsed_data = {
@@ -94,8 +96,8 @@ class ResumeParser:
             
             return "\n".join(text_parts)
         
-        except Exception as e:
-            print(f"Error extracting PDF text: {e}")
+        except Exception:
+            print("Error extracting PDF text")
             return ""
     
     def extract_skills(self, text: Optional[str] = None) -> List[str]:
